@@ -17,11 +17,27 @@
  */
 struct list_head *q_new()
 {
-    return NULL;
+    struct list_head *head = malloc(sizeof(struct list_head));
+    if (!head) {
+        return NULL;
+    }
+    INIT_LIST_HEAD(head);
+    return head;
 }
 
 /* Free all storage used by queue */
-void q_free(struct list_head *l) {}
+void q_free(struct list_head *l)
+{
+    element_t *elm, *tmp;
+    if (l) {
+        list_for_each_entry_safe (elm, tmp, l, list) {
+            list_del(&elm->list);
+            free(elm->value);
+            free(elm);
+        }
+        free(l);
+    }
+}
 
 /*
  * Attempt to insert element at head of queue.
@@ -32,6 +48,22 @@ void q_free(struct list_head *l) {}
  */
 bool q_insert_head(struct list_head *head, char *s)
 {
+    if (!head) {
+        return false;
+    }
+    element_t *elm = malloc(sizeof(element_t));
+    if (!elm) {
+        return false;
+    }
+    size_t len = strlen(s) + 1;
+    char *val = malloc(sizeof(char) * len);
+    if (!val) {
+        free(elm);
+        return false;
+    }
+    memcpy(val, s, len);
+    elm->value = val;
+    list_add(&elm->list, head);
     return true;
 }
 
@@ -44,6 +76,22 @@ bool q_insert_head(struct list_head *head, char *s)
  */
 bool q_insert_tail(struct list_head *head, char *s)
 {
+    if (!head) {
+        return false;
+    }
+    element_t *elm = malloc(sizeof(element_t));
+    if (!elm) {
+        return false;
+    }
+    size_t len = strlen(s) + 1;
+    char *val = malloc(sizeof(char) * len);
+    if (!val) {
+        free(elm);
+        return false;
+    }
+    memcpy(val, s, len);
+    elm->value = val;
+    list_add_tail(&elm->list, head);
     return true;
 }
 
@@ -63,7 +111,20 @@ bool q_insert_tail(struct list_head *head, char *s)
  */
 element_t *q_remove_head(struct list_head *head, char *sp, size_t bufsize)
 {
-    return NULL;
+    if (!head) {
+        return NULL;
+    }
+    if (list_empty(head)) {
+        return NULL;
+    }
+    element_t *elm = list_first_entry(head, element_t, list);
+    head->next->next->prev = head;
+    head->next = head->next->next;
+    if (sp) {
+        memcpy(sp, elm->value, bufsize);
+        sp[bufsize - 1] = '\0';
+    }
+    return elm;
 }
 
 /*
@@ -72,7 +133,20 @@ element_t *q_remove_head(struct list_head *head, char *sp, size_t bufsize)
  */
 element_t *q_remove_tail(struct list_head *head, char *sp, size_t bufsize)
 {
-    return NULL;
+    if (!head) {
+        return NULL;
+    }
+    if (list_empty(head)) {
+        return NULL;
+    }
+    element_t *elm = list_last_entry(head, element_t, list);
+    head->prev->prev->next = head;
+    head->prev = head->prev->prev;
+    if (sp) {
+        memcpy(sp, elm->value, bufsize);
+        sp[bufsize - 1] = '\0';
+    }
+    return elm;
 }
 
 /*
@@ -91,7 +165,15 @@ void q_release_element(element_t *e)
  */
 int q_size(struct list_head *head)
 {
-    return -1;
+    if (!head)
+        return 0;
+
+    int len = 0;
+    struct list_head *li;
+
+    list_for_each (li, head)
+        len++;
+    return len;
 }
 
 /*
@@ -104,6 +186,23 @@ int q_size(struct list_head *head)
 bool q_delete_mid(struct list_head *head)
 {
     // https://leetcode.com/problems/delete-the-middle-node-of-a-linked-list/
+    if (!head) {
+        return false;
+    }
+    if (list_empty(head)) {
+        return false;
+    }
+    struct list_head *slow = head->next;
+    for (struct list_head *fast = head->next;
+         fast != head && fast->next != head; fast = fast->next->next) {
+        slow = slow->next;
+    }
+    slow->prev->next = slow->next;
+    slow->next->prev = slow->prev;
+    element_t *del = list_entry(slow, element_t, list);
+    list_del(slow);
+    free(del->value);
+    free(del);
     return true;
 }
 
@@ -137,7 +236,18 @@ void q_swap(struct list_head *head)
  * (e.g., by calling q_insert_head, q_insert_tail, or q_remove_head).
  * It should rearrange the existing ones.
  */
-void q_reverse(struct list_head *head) {}
+void q_reverse(struct list_head *head)
+{
+    struct list_head *node, *tmp;
+    list_for_each_safe (node, tmp, head) {
+        struct list_head *prev = node->prev;
+        node->prev = node->next;
+        node->next = prev;
+    }
+    tmp = head->next;
+    head->next = head->prev;
+    head->prev = tmp;
+}
 
 /*
  * Sort elements of queue in ascending order

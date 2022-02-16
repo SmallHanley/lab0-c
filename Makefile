@@ -67,7 +67,7 @@ valgrind: valgrind_existence
 	sed -i "s/alarm/isnan/g" $(patched_file)
 	scripts/driver.py -p $(patched_file) --valgrind $(TCASE)
 	@echo
-	@echo "Test with specific case by running command:" 
+	@echo "Test with specific case by running command:"
 	@echo "scripts/driver.py -p $(patched_file) --valgrind -t <tid>"
 
 clean:

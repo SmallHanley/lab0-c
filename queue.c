@@ -261,6 +261,9 @@ void q_swap(struct list_head *head)
  */
 void q_reverse(struct list_head *head)
 {
+    if (!head || list_empty(head)) {
+        return;
+    }
     struct list_head *node, *tmp;
     list_for_each_safe (node, tmp, head) {
         struct list_head *prev = node->prev;

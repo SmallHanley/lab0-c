@@ -205,6 +205,27 @@ bool q_delete_dup(struct list_head *head)
     if (!head) {
         return false;
     }
+    struct list_head *node, *tmp;
+    bool has_dup = false;
+    list_for_each_safe (node, tmp, head) {
+        list_del(node);
+        if (node->next != head &&
+            !strcmp(list_entry(node, element_t, list)->value,
+                    list_entry(node->next, element_t, list)->value)) {
+            has_dup = true;
+            element_t *del = list_entry(node, element_t, list);
+            list_del(node);
+            free(del->value);
+            free(del);
+        }
+        if (has_dup) {
+            has_dup = false;
+            element_t *del = list_entry(node, element_t, list);
+            list_del(node);
+            free(del->value);
+            free(del);
+        }
+    }
     return true;
 }
 
@@ -216,9 +237,12 @@ void q_swap(struct list_head *head)
     // https://leetcode.com/problems/swap-nodes-in-pairs/
     struct list_head *node;
     list_for_each (node, head) {
-        puts(list_entry(node, element_t, list)->value);
+        if (node->next == head) {
+            break;
+        }
+        struct list_head *tmp = node->next;
         list_del(node);
-        list_add(node, head->next);
+        list_add(node, tmp);
     }
 }
 

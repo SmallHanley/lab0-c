@@ -76,6 +76,22 @@ bool q_insert_head(struct list_head *head, char *s)
  */
 bool q_insert_tail(struct list_head *head, char *s)
 {
+    if (!head) {
+        return false;
+    }
+    element_t *elm = malloc(sizeof(element_t));
+    if (!elm) {
+        return false;
+    }
+    size_t len = strlen(s) + 1;
+    char *val = malloc(sizeof(char) * len);
+    if (!val) {
+        free(elm);
+        return false;
+    }
+    memcpy(val, s, len);
+    elm->value = val;
+    list_add_tail(&elm->list, head);
     return true;
 }
 

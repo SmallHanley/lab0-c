@@ -328,7 +328,7 @@ void merge_sort_list(struct list_head *head)
  */
 void q_sort(struct list_head *head)
 {
-    if (!head || q_size(head) < 2) {
+    if (!head || list_empty(head) || list_is_singular(head)) {
         return;
     }
     merge_sort_list(head);

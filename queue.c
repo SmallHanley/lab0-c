@@ -189,8 +189,6 @@ bool q_delete_mid(struct list_head *head)
          fast != head && fast->next != head; fast = fast->next->next) {
         slow = slow->next;
     }
-    slow->prev->next = slow->next;
-    slow->next->prev = slow->prev;
     element_t *del = list_entry(slow, element_t, list);
     list_del(slow);
     free(del->value);

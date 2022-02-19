@@ -614,8 +614,13 @@ bool do_sort(int argc, char *argv[])
     error_check();
 
     set_noallocate_mode(true);
-    if (exception_setup(true))
-        q_sort(l_meta.l);
+    if (exception_setup(true)) {
+        if (is_enable_linux_sort()) {
+            q_linux_sort(l_meta.l);
+        } else {
+            q_sort(l_meta.l);
+        }
+    }
     exception_cancel();
     set_noallocate_mode(false);
 

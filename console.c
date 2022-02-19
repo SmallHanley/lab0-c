@@ -57,6 +57,7 @@ static int fd_max = 0;
 static int err_limit = 5;
 static int err_cnt = 0;
 static int echo = 0;
+static int linuxsort = 0;
 
 static bool quit_flag = false;
 static char *prompt = "cmd> ";
@@ -416,6 +417,7 @@ void init_cmd()
     add_param("verbose", &verblevel, "Verbosity level", NULL);
     add_param("error", &err_limit, "Number of errors until exit", NULL);
     add_param("echo", &echo, "Do/don't echo commands", NULL);
+    add_param("linuxsort", &linuxsort, "Linux list-sort", NULL);
 
     init_in();
     init_time(&last_time);
@@ -657,4 +659,9 @@ bool run_console(char *infile_name)
     }
 
     return err_cnt == 0;
+}
+
+bool is_enable_linux_sort()
+{
+    return linuxsort == 1;
 }

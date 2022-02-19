@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "harness.h"
+#include "list_sort.h"
 #include "queue.h"
 
 /* Notice: sometimes, Cppcheck would find the potential NULL pointer bugs,
@@ -317,6 +318,15 @@ void merge_sort_list(struct list_head *head)
     list_splice_tail(&sorted, head);
 }
 
+static int value_cmp(void *priv,
+                     const struct list_head *a,
+                     const struct list_head *b)
+{
+    char *av = list_entry(a, element_t, list)->value;
+    char *bv = list_entry(b, element_t, list)->value;
+    return strcmp(av, bv);
+}
+
 /*
  * Sort elements of queue in ascending order
  * No effect if q is NULL or empty. In addition, if q has only one
@@ -328,4 +338,12 @@ void q_sort(struct list_head *head)
         return;
     }
     merge_sort_list(head);
+}
+
+void q_linux_sort(struct list_head *head)
+{
+    if (!head || list_empty(head) || list_is_singular(head)) {
+        return;
+    }
+    list_sort(NULL, head, value_cmp);
 }

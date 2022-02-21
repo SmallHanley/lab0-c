@@ -133,4 +133,6 @@ void q_sort(struct list_head *head);
 
 void q_linux_sort(struct list_head *head);
 
+void q_shuffle(struct list_head *head);
+
 #endif /* LAB0_QUEUE_H */

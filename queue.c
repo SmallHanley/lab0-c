@@ -347,3 +347,12 @@ void q_linux_sort(struct list_head *head)
     }
     list_sort(NULL, head, value_cmp);
 }
+
+void q_shuffle(struct list_head *head)
+{
+    if (!head || list_empty(head) || list_is_singular(head)) {
+        return;
+    }
+    // int size = q_size(head);
+    srand(time(NULL));
+}

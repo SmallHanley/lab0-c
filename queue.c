@@ -354,6 +354,27 @@ void q_shuffle(struct list_head *head)
     if (!head || list_empty(head) || list_is_singular(head)) {
         return;
     }
-    // int size = q_size(head);
+    int size = q_size(head);
     srand(time(NULL));
+    struct list_head *left, *right;
+    for (int i = 0; i < size; i++) {
+        int j = rand() % (size - i) + i;
+        if (i != j) {
+            left = right = head->next;
+            int t = i;
+            while (t--) {
+                left = left->next;
+            }
+            while (j--) {
+                right = right->next;
+            }
+            struct list_head *posl = left->prev, *posr = right->prev;
+            list_del(right);
+            list_add(right, posl);
+            if (j - i > 1) {
+                list_del(left);
+                list_add(left, posr);
+            }
+        }
+    }
 }

@@ -30,6 +30,12 @@ ifeq ("$(SANITIZER)","1")
     LDFLAGS += -fsanitize=address
 endif
 
+# Enable gcov or not
+ifeq ("$(GCOV)","1")
+    CFLAGS += -ftest-coverage -fprofile-arcs
+    LDFLAGS += --coverage -lgcov -fprofile-arcs
+endif
+
 $(GIT_HOOKS):
 	@scripts/install-git-hooks
 	@echo
@@ -75,5 +81,5 @@ clean:
 	rm -rf .$(DUT_DIR)
 	rm -rf *.dSYM
 	(cd traces; rm -f *~)
-
+	find . \( -name "*.gcno" -o -name "*.gcda" -o -name "*.gcov" \) -type f -delete
 -include $(deps)

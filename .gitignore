@@ -24,3 +24,8 @@ GPATH
 GRTAGS
 GSYMS
 GTAGS
+
+# gcov files
+*.gcda
+*.gcno
+*.gcov

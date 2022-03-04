@@ -646,6 +646,7 @@ bool run_console(char *infile_name)
     }
 
     if (!has_infile) {
+        linenoiseHistoryLoad(HISTORY_FILE); /* Load the history at startup */
         char *cmdline;
         while ((cmdline = linenoise(prompt)) != NULL) {
             interpret_cmd(cmdline);

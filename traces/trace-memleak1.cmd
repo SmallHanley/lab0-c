@@ -1,0 +1,3 @@
+new
+ih hello
+quit
